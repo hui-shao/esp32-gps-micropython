@@ -34,3 +34,4 @@ if __name__ == '__main__':
     while i < 2048:
         GI = G.read(i)
         time.sleep(1)
+        i = i + 1
