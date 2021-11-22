@@ -4,11 +4,11 @@ ESP32串口通信-字符串数据自发实验
 接线 将开发板的 13号引脚与12号引脚用杜邦线相连接。
 
 '''
-from machine import UART,Pin
+from machine import UART, Pin
 import utime
 
 # 初始化一个UART对象
-uart = UART(2, baudrate=9600, rx=13,tx=12,timeout=10)
+uart = UART(2, baudrate=9600, rx=13, tx=12, timeout=10)
 
 count = 1
 
@@ -17,7 +17,7 @@ while True:
 
     # 发送一条消息
     print('Send: {}'.format('hello {}\n'.format(count)))
-    print('Send Byte :') # 发送字节数
+    print('Send Byte :')  # 发送字节数
     uart.write('hello {}\n'.format(count))
     # 等待1s钟
     utime.sleep_ms(1000)

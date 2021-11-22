@@ -92,7 +92,7 @@ class GpsInfo:
 
 
 if __name__ == '__main__':  # for debug
-    f = open("./test.txt", "r", encoding="utf-8")
+    f = open("./tests/test.txt", "r", encoding="utf-8")
     info = f.read()
     f.close()
     G = GpsInfo(info)
