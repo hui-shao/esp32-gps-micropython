@@ -10,17 +10,20 @@ class GPS:
         # self.uart1.write("Test " + str(_i))
         print("===========================\n")
         print("No." + str(_i))
-        if self.uart1.any():
-            bin_data = self.uart1.read()
-            gi = GpsInfo(bin_data.decode())
-            print("\nRaw data:")
-            print(bin_data.decode())
-            print("\nFormatted data:")
-            print(gi.DT.date_str + " " + gi.DT.time_ms_str)
-            print(gi.P.position_f)
-        else:
+        try:
+            if self.uart1.any():
+                bin_data = self.uart1.read()
+                gi = GpsInfo(bin_data.decode())
+                print("\nRaw data:")
+                print(bin_data.decode())
+                print("\nFormatted data:")
+                print(gi.DT.date_str + " " + gi.DT.time_ms_str)
+                print(gi.P.position_f)
+            else:
+                gi = GpsInfo("null")
+                # print("\nNo data for read")
+        except UnicodeError:
             gi = GpsInfo("null")
-            print("\nNo data for read")
         print()
         print("===========================\n")
         return gi
