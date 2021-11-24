@@ -57,12 +57,44 @@ def send_data_to_cloud():
     pass
 
 
+def read_target_p_from_pc(_i: int) -> bool:
+    """
+    获取 PC 下发的 GPS 目的地坐标信息
+    输入格式 23.2302 119.5625
+    分隔符为空格 纬度在前
+    :param _i: 坐标点的序号 从 1开始
+    :return: bool
+    """
+    global destination_arr
+    _i -= 1  # 数组下标
+    n_ = 1
+    while 1:  # 用于限时 60 s
+        try:
+            str_in_arr = input("请输入目标点经纬度: ").split(" ")
+            lat = float(str_in_arr[0])
+            lon = float(str_in_arr[1])
+            destination_arr[_i] = [lat, lon]
+        except IndexError:
+            continue
+        except ValueError:
+            continue
+        else:
+            return True
+        finally:
+            time.sleep(1)
+            n_ += 1
+        if n_ >= 60:
+            print("Time Out.")
+            return False
+
+
 # Button
 pin0 = machine.Pin(0, machine.Pin.OUT)
 pin0.value(1)
 pin2 = machine.Pin(2, machine.Pin.OUT)
 pin2.value(1)
-# todo 新增一个按钮 用于接收坐标
+pin4 = machine.Pin(4, machine.Pin.OUT)
+pin4.value(1)
 
 # Class instantiation
 G = GPS()
@@ -73,7 +105,7 @@ S = Screen()
 # Global vars
 n = 0
 screen_i = 0  # 用于记录显示第几屏幕
-destination_arr = [[0.00, 0.00] * 5]  # 二维数组 用于存放目标点坐标
+destination_arr = [[0.0 for i in range(2)] for j in range(5)]  # 二维数组 用于存放目标点坐标
 
 while n < 89120:
     # GPS 模块
@@ -99,6 +131,13 @@ while n < 89120:
             # 按钮 2 事件 todo
             if screen_i < 5:
                 screen_i += 1
+
+    # 按钮 3
+    if pin4.value() == 0:
+        time.sleep_ms(150)
+        if pin4.value() == 0:
+            # 按钮 3 事件 读入数据
+            read_target_p_from_pc(screen_i)
 
     # Screen
     S.show_n(screen_i)
