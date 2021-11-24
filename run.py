@@ -1,11 +1,15 @@
 import time
 import machine
 from gps_uart import GPS
+from geo_calculate import GeoCal
 from oled import OLED
-from wifi import WIFI
+from water_and_led import WaterSensor
 
 
-class Screen:  # todo 完善 5 个屏幕
+# from wifi import WIFI
+
+
+class Screen:
     def __init__(self):
         self.OL = OLED()
         self.init()
@@ -23,6 +27,7 @@ class Screen:  # todo 完善 5 个屏幕
         self.OL.rect()
         self.OL.text("Hello 1024WJX !", 5, 10)
         self.OL.show()
+        time.sleep(5)
 
     def clear(self):
         self.OL.clear()
@@ -30,31 +35,52 @@ class Screen:  # todo 完善 5 个屏幕
     def show(self):
         self.OL.show()
 
-    # todo 用变量替换屏幕内容
     def s_0(self):
         self.OL.clear()
         self.OL.rect()
-        self.OL.text("21-11-17", 10, 3)
-        self.OL.text("08:53:26.000", 10, 13)
-        self.OL.text("36°24′0″ N", 10, 23)
-        self.OL.text("117°4′54″ E", 10, 33)
-        print("s 0")
+        self.OL.text(GI_1.DT.date_str, 10, 3)
+        self.OL.text(GI_1.DT.time_ms_str, 10, 13)
+        self.OL.text("{} {}".format(GI_1.P.position_f_s[1], GI_1.P.position_f_s[2]), 10, 23)
+        self.OL.text("{} {}".format(GI_1.P.position_f_s[3], GI_1.P.position_f_s[4]), 10, 33)
+        self.OL.show()
 
     def s_dest(self, _i: int):
         _i -= 1  # 数组下标 序号减一
+        lat_target = destination_arr[_i][0]
+        lon_target = destination_arr[_i][1]
         self.OL.clear()
         self.OL.rect()
-        self.OL.text("08:53:26.000", 10, 3)
-        self.OL.text("36°24′0″ N", 10, 13)
-        self.OL.text("117°4′54″ E", 10, 23)
-        self.OL.text("778.376 km 0.00°", 10, 33)
-        print("Current: {0}".format(_i + 1))  # for test
+        self.OL.text(GI_1.DT.time_ms_str, 10, 3)
+        self.OL.text("%.5f N" % lat_target, 10, 13)
+        self.OL.text("%.5f E" % lon_target, 10, 23)
+        gc = GeoCal(GI_1.P.position[0], GI_1.P.position[1], lat_target, lon_target)
+        self.OL.text("{}".format(gc.distance_f_s), 10, 33)
+        self.OL.text("{}".format(gc.angle_degree_s), 10, 43)
+        self.OL.show()
+        # print("Current: {0}".format(_i + 1))  # for test
 
 
-def send_data_to_cloud():
-    if not IS_WIFI_CONNECTED:
-        return False
-    pass
+class GpsInfoDefault:
+    """
+    用于初始化 GI_1
+    """
+
+    class P:
+        position = [36.4001209, 117.0817661]  # 默认纬度在前
+        position_s = ['A', '36.4001209', 'N', '117.0817661', 'E']
+        position_f_s = ['A', '36°24′0″', 'N', '117°4′54″', 'E']
+
+    class DT:
+        date_str = "null"
+        time_str = "null"
+        time_ms_str = "null"
+
+
+def send_data_to_pc():
+    # if not IS_WIFI_CONNECTED:
+    #     pass
+    # return False
+    print(GI_1.P.position_s)
 
 
 def read_target_p_from_pc(_i: int) -> bool:
@@ -71,8 +97,8 @@ def read_target_p_from_pc(_i: int) -> bool:
     while 1:  # 用于限时 60 s
         try:
             str_in_arr = input("请输入目标点经纬度: ").split(" ")
-            lat = float(str_in_arr[0])
-            lon = float(str_in_arr[1])
+            lat = float(str_in_arr[0])  # 纬度
+            lon = float(str_in_arr[1])  # 经度
             destination_arr[_i] = [lat, lon]
         except IndexError:
             continue
@@ -84,7 +110,7 @@ def read_target_p_from_pc(_i: int) -> bool:
             time.sleep(1)
             n_ += 1
         if n_ >= 60:
-            print("Time Out.")
+            # print("Time Out.")
             return False
 
 
@@ -98,8 +124,8 @@ pin4.value(1)
 
 # Class instantiation
 G = GPS()
-W = WIFI("mmcblk0p7", "66661111")
-IS_WIFI_CONNECTED = W.connect()
+# W = WIFI("mmcblk0p7", "66661111")
+# IS_WIFI_CONNECTED = W.connect()
 S = Screen()
 
 # Global vars
@@ -109,18 +135,19 @@ destination_arr = [[0.0 for i in range(2)] for j in range(5)]  # 二维数组 �
 
 while n < 89120:
     # GPS 模块
-    GI = G.read(n)
+    GI_1 = GpsInfoDefault  # 初始化 GI_1
+    GI_2 = G.read(n)
+    if "null" not in GI_2.DT.date_str:
+        GI_1 = GI_2
     print()
 
-    # 数据上云
-    # todo
-    send_data_to_cloud()
+    # 数据上云 todo
+    # send_data_to_pc()
 
     # 按钮 1
     if pin0.value() == 0:
         time.sleep_ms(150)
         if pin0.value() == 0:
-            # 按钮 1 事件 todo
             if screen_i > 0:
                 screen_i -= 1
 
@@ -128,7 +155,6 @@ while n < 89120:
     if pin2.value() == 0:
         time.sleep_ms(150)
         if pin2.value() == 0:
-            # 按钮 2 事件 todo
             if screen_i < 5:
                 screen_i += 1
 
@@ -140,7 +166,11 @@ while n < 89120:
             read_target_p_from_pc(screen_i)
 
     # Screen
+    # 显示第 1 - 5 屏内容
     S.show_n(screen_i)
+
+    # WaterSensor
+    WaterSensor.run()
 
     time.sleep(0.08)
     n += 1
