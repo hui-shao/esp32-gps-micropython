@@ -22,7 +22,7 @@ class WIFI:
         self.wlan.disconnect()  # 断开WiFi连接
         self.wlan.connect(self.ssid, self.passwd)  # 连接WiFi
         i = 1
-        while (1):  # 等待连接
+        while 1:  # 等待连接
             if self.wlan.ifconfig()[0] == "0.0.0.0":
                 time.sleep(1)
                 i += 1
