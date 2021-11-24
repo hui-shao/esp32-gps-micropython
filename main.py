@@ -1,0 +1,1 @@
+exec(open('run.py').read(),globals())
