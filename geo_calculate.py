@@ -1,15 +1,15 @@
 class GeoCal:
-    def __init__(self, lon1: float, lat1: float, lon2: float, lat2: float):
+    def __init__(self, lat1: float, lon1: float, lat2: float, lon2: float):
         self.distance = 0.0  # 单位为 km
         self.distance_f_s = "0.0 m"
         self.angle_rad = 0.0  # angle 指的是航向角
         self.angle_rad_s = "0.00 rad"
         self.angle_degree = 0.0
         self.angle_degree_s = "0.00 °"
-        self._cal_geo_distance_and_angle(lon1, lat1, lon2, lat2)
+        self._cal_geo_distance_and_angle(lat1, lon1, lat2, lon2)
         self._format_data()
 
-    def _cal_geo_distance_and_angle(self, _lon1: float, _lat1: float, _lon2: float, _lat2: float) -> None:
+    def _cal_geo_distance_and_angle(self, _lat1: float, _lon1: float, _lat2: float, _lon2: float) -> None:
         from math import radians, tan, sin, cos, asin, atan2, sqrt, log, pi, degrees
         _lon1, _lat1, _lon2, _lat2 = map(radians, map(float, [_lon1, _lat1, _lon2, _lat2]))
 
@@ -44,9 +44,7 @@ class GeoCal:
 
 
 if __name__ == '__main__':
-    # 小方位角测试数据 113.1038, 42.0123, 113.1039, 49.0124
-    # 大方位角测试数据 113.1038, 42.0123, 113.1037, 49.0124 计算的角度应该接近 360 度
-    D = GeoCal(113.1038, 42.0123, 113.1037, 49.0124)
+    D = GeoCal(42.0123, 113.1038, 49.0124, 113.1037)
     print(D.distance)
     print(D.distance_f_s)
     print(D.angle_rad)
