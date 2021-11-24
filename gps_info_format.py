@@ -12,8 +12,9 @@ class GpsInfo:
     raw_dict = {}
 
     class P:
-        position = ["null"] * 5  # 经纬度 大体格式 ['A', '3640.01209', 'N', '11708.17661', 'E'] A 是有效定位的意思
-        position_f = ["null"] * 5  # 以度分秒显示的经纬度(精度低) 大体格式 ['A', '36°24′0″', 'N', '117°4′54″', 'E']
+        position = [0.00, 0.00]  # 默认纬度在前
+        position_s = ["null"] * 5  # 经纬度 大体格式 ['A', '3640.01209', 'N', '11708.17661', 'E'] A 是有效定位的意思
+        position_f_s = ["null"] * 5  # 以度分秒显示的经纬度(精度低) 大体格式 ['A', '36°24′0″', 'N', '117°4′54″', 'E']
 
     class DT:
         date_str = "null"
@@ -51,19 +52,20 @@ class GpsInfo:
         """
 
         def run():
-            # 生成 self.P.position
+            # 生成 self.P.position_s
             for i in range(0, 5, 1):
-                self.P.position[i] = _dict.get("$GPRMC", {}).get(str(i + 2), "null")
-                self.P.position_f[i] = _dict.get("$GPRMC", {}).get(str(i + 2), "null")
+                self.P.position_s[i] = _dict.get("$GPRMC", {}).get(str(i + 2), "null")
+                self.P.position_f_s[i] = _dict.get("$GPRMC", {}).get(str(i + 2), "null")
 
-            # 生成 self.P.position_f
-            if "null" not in self.P.position_f and all(len(j) > 0 for j in self.P.position_f):  # 防止下面的类型转换出错
+            # 生成 self.P.position_f_s 和 self.position
+            if "null" not in self.P.position_f_s and all(len(j) > 0 for j in self.P.position_f_s):  # 防止下面的类型转换出错
+                self.P.position = [float(self.P.position_s[1]), float(self.P.position_s[3])]
                 for i in range(1, 4, 2):
                     # noinspection PyTypeChecker
-                    du = int(float(self.P.position_f[i]) / 100)
-                    fen = int((float(self.P.position_f[i]) / 100 - du) * 60)
-                    miao = int((((float(self.P.position_f[i]) / 100 - du) * 60 - fen) * 60).__round__(0))
-                    self.P.position_f[i] = str(du) + "°" + str(fen) + "′" + str(miao) + "″"
+                    du = int(float(self.P.position_f_s[i]) / 100)
+                    fen = int((float(self.P.position_f_s[i]) / 100 - du) * 60)
+                    miao = int((((float(self.P.position_f_s[i]) / 100 - du) * 60 - fen) * 60).__round__(0))
+                    self.P.position_f_s[i] = str(du) + "°" + str(fen) + "′" + str(miao) + "″"
 
             # 生成 self.DT.xxx
             date = _dict.get("$GPRMC", {}).get("9", "")
@@ -99,8 +101,8 @@ if __name__ == '__main__':  # for debug
     print(G.raw_dict)
 
     # GpsInfo.P
-    print(G.P.position)
-    print(G.P.position_f)
+    print(G.P.position_s)
+    print(G.P.position_f_s)
 
     # GpsInfo.DT
     print(G.DT.date_str + " " + G.DT.time_ms_str)
