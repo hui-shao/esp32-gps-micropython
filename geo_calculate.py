@@ -22,10 +22,12 @@ class GeoCal:
         self.distance = c * r
 
         # 计算航向角度
-        # todo 航向往西边没有负数
         delta_fi = log(tan(_lat2 / 2 + pi / 4) / tan(_lat1 / 2 + pi / 4))
         delta_lon = abs(_lon1 - _lon2) % 180
-        theta = atan2(delta_lon, delta_fi)
+        if _lon1 <= _lon2:
+            theta = atan2(delta_lon, delta_fi)
+        else:
+            theta = 2 * pi - atan2(delta_lon, delta_fi)
         self.angle_rad = theta
         self.angle_degree = degrees(theta)
         return None
