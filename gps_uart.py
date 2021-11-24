@@ -3,29 +3,37 @@ from gps_info_format import GpsInfo
 
 
 class GPS:
-    def __init__(self):
+    def __init__(self, is_print: bool = False):
         self.uart1 = machine.UART(2, baudrate=9600, rx=35, tx=36, timeout=10)
+        self.is_print = is_print
 
-    def read(self, _i: int) -> GpsInfo:
-        # self.uart1.write("Test " + str(_i))
+    @staticmethod
+    def print_data(_i: int, _is_recv: bool, _gi, _bin_data: bytes = ""):
         print("===========================\n")
         print("No." + str(_i))
+        if _is_recv:
+            print("\nRaw data:")
+            print(_bin_data.decode())
+            print("\nFormatted data:")
+            print(_gi.DT.date_str + " " + _gi.DT.time_ms_str)
+            print(_gi.P.position_f_s)
+        else:
+            print("\nNo data for read")
+        print()
+        print("===========================\n")
+
+    def read(self, _i: int) -> GpsInfo:
         try:
             if self.uart1.any():
                 bin_data = self.uart1.read()
                 gi = GpsInfo(bin_data.decode())
-                print("\nRaw data:")
-                print(bin_data.decode())
-                print("\nFormatted data:")
-                print(gi.DT.date_str + " " + gi.DT.time_ms_str)
-                print(gi.P.position_f_s)
+                self.print_data(_i, True, gi, bin_data)
             else:
                 gi = GpsInfo("null")
-                # print("\nNo data for read")
+                self.print_data(_i, True, gi)
         except UnicodeError:
             gi = GpsInfo("null")
-        print()
-        print("===========================\n")
+            self.print_data(_i, True, gi)
         return gi
 
 
