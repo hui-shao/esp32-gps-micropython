@@ -4,7 +4,7 @@ from gps_info_format import GpsInfo
 
 class GPS:
     def __init__(self):
-        self.uart1 = machine.UART(2, baudrate=9600, rx=13, tx=12, timeout=10)
+        self.uart1 = machine.UART(2, baudrate=9600, rx=35, tx=36, timeout=10)
 
     def read(self, _i: int) -> GpsInfo:
         # self.uart1.write("Test " + str(_i))

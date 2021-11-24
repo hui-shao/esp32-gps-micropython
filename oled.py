@@ -3,7 +3,7 @@ from ssd1306 import SSD1306_I2C
 
 
 class OLED:
-    i2c = I2C(scl=Pin(21), sda=Pin(22), freq=10000)  # 软件I2C
+    i2c = I2C(scl=Pin(13), sda=Pin(12), freq=10000)  # 软件I2C
     oled = SSD1306_I2C(128, 64, i2c)  # 创建oled对象
 
     def __init__(self):
