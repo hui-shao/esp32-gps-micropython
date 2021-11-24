@@ -18,7 +18,7 @@ class GPS:
                 print(bin_data.decode())
                 print("\nFormatted data:")
                 print(gi.DT.date_str + " " + gi.DT.time_ms_str)
-                print(gi.P.position_f)
+                print(gi.P.position_f_s)
             else:
                 gi = GpsInfo("null")
                 # print("\nNo data for read")
