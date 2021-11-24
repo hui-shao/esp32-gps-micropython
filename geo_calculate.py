@@ -5,7 +5,7 @@ class GeoCal:
         self.angle_rad = 0.0  # angle 指的是航向角
         self.angle_rad_s = "0.00 rad"
         self.angle_degree = 0.0
-        self.angle_degree_s = "0.00 °"
+        self.angle_degree_s = "0.00 "
         self._cal_geo_distance_and_angle(lat1, lon1, lat2, lon2)
         self._format_data()
 
@@ -38,7 +38,7 @@ class GeoCal:
         else:
             self.distance_f_s = "%.3f km" % self.distance
         # 转换为角度 str
-        self.angle_degree_s = "%.2f°" % self.angle_degree
+        self.angle_degree_s = "%.2f" % self.angle_degree
         self.angle_rad_s = "%.2f rad" % self.angle_rad
         return None
 
