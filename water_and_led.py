@@ -1,8 +1,8 @@
 import time
 import machine
 
-gp_buzzer = 27
-buzzer = machine.Pin(gp_buzzer, machine.Pin.OUT)
+buzzer = machine.Pin(27, machine.Pin.OUT)
+buzzer.value(1)
 pwm14 = machine.PWM(machine.Pin(14))
 pwm15 = machine.PWM(machine.Pin(15))
 pwm16 = machine.PWM(machine.Pin(16))
@@ -20,17 +20,13 @@ class WaterSensor:
             buzzer.value(0)
             time.sleep(0.3)
             buzzer.value(1)
-            time.sleep(1)
-            buzzer.value(0)
-        if 200 < adc32.read() < 400:
+        elif 200 < adc32.read() < 3750:
             WaterSensor.led_green()
-        if adc32.read() >= 400:
+        elif adc32.read() >= 3750:
             WaterSensor.led_red()
             buzzer.value(0)
             time.sleep(0.3)
             buzzer.value(1)
-            time.sleep(1)
-            buzzer.value(0)
 
     @staticmethod
     def led_red():
