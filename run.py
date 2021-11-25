@@ -25,7 +25,7 @@ class Screen:
     def init(self):
         self.OL.clear()
         self.OL.rect()
-        self.OL.text("Hello 1024WJX !", 5, 10)
+        self.OL.text("Hello 1024WJX !", 5, 30)
         self.OL.show()
         time.sleep(5)
 
@@ -172,5 +172,5 @@ while n < 89120:
     # WaterSensor
     WaterSensor.run()
 
-    time.sleep(0.08)
+    time.sleep(0.05)
     n += 1

@@ -66,7 +66,7 @@ class GpsInfo:
                 for i in range(1, 4, 2):
                     du = int(float(self.P.position_f_s[i]) / 100)
                     fen = int((float(self.P.position_f_s[i]) / 100 - du) * 60)
-                    miao = int((((float(self.P.position_f_s[i]) / 100 - du) * 60 - fen) * 60).__round__(0))
+                    miao = int((((float(self.P.position_f_s[i]) / 100 - du) * 60 - fen) * 60))
                     self.P.position_f_s[i] = str(du) + "°" + str(fen) + "′" + str(miao) + "″"
 
             # 生成 self.DT.xxx
