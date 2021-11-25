@@ -106,6 +106,7 @@ if __name__ == '__main__':  # for debug
     print(G.P.position)
     print(G.P.position_s)
     print(G.P.position_f_s)
+    print("{:.5}".format(G.P.position[0]))  # 5 位有效数字
 
     # GpsInfo.DT
     print(G.DT.date_str + " " + G.DT.time_ms_str)

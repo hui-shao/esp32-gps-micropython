@@ -40,8 +40,8 @@ class Screen:
         self.OL.rect()
         self.OL.text(GI_1.DT.date_str, 10, 3)
         self.OL.text(GI_1.DT.time_ms_str, 10, 13)
-        self.OL.text("{} {}".format(GI_1.P.position_f_s[1], GI_1.P.position_f_s[2]), 10, 23)
-        self.OL.text("{} {}".format(GI_1.P.position_f_s[3], GI_1.P.position_f_s[4]), 10, 33)
+        self.OL.text("{:.5f} {}".format(GI_1.P.position[0], GI_1.P.position_f_s[2]), 10, 23)
+        self.OL.text("{:.5f} {}".format(GI_1.P.position[1], GI_1.P.position_f_s[4]), 10, 33)
         self.OL.show()
 
     def s_dest(self, _i: int):
@@ -71,9 +71,9 @@ class GpsInfoDefault:
         position_f_s = ['A', '36°24′0″', 'N', '117°4′54″', 'E']
 
     class DT:
-        date_str = "null"
-        time_str = "null"
-        time_ms_str = "null"
+        date_str = "00-00-00"
+        time_str = "00:00:00.000"
+        time_ms_str = "00:00:00.000"
 
 
 def send_data_to_pc():
