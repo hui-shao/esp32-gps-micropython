@@ -20,12 +20,17 @@ class WaterSensor:
             buzzer.value(0)
             time.sleep(0.3)
             buzzer.value(1)
-        elif 200 < adc32.read() < 3750:
+            time.sleep(0.5)
+        elif 200 < adc32.read() < 4000:
             WaterSensor.led_green()
-        elif adc32.read() >= 3750:
+        elif adc32.read() >= 4000:
             WaterSensor.led_red()
             buzzer.value(0)
+            time.sleep(0.15)
+            buzzer.value(1)
             time.sleep(0.3)
+            buzzer.value(0)
+            time.sleep(0.15)
             buzzer.value(1)
 
     @staticmethod
