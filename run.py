@@ -76,11 +76,11 @@ class GpsInfoDefault:
         time_ms_str = "00:00:00.000"
 
 
-def send_data_to_pc():
+def send_data_to_pc(_input: str):
     # if not IS_WIFI_CONNECTED:
     #     pass
     # return False
-    print(GI_1.P.position_s)
+    print(_input)
 
 
 def read_target_p_from_pc(_i: int) -> bool:
@@ -141,8 +141,8 @@ while n < 89120:
         GI_1 = GI_2
     print()
 
-    # 数据上云 todo
-    # send_data_to_pc()
+    # 数据上云
+    send_data_to_pc(GI_1.P.position_s)
 
     # 按钮 1
     if pin0.value() == 0:
@@ -170,7 +170,9 @@ while n < 89120:
     S.show_n(screen_i)
 
     # WaterSensor
-    WaterSensor.run()
+    alarm_info = WaterSensor.run()
+    if "NORMAL" not in alarm_info:
+        send_data_to_pc("['Alarm'] {}  ['Position'] {}".format(alarm_info, GI_1.P.position_s))
 
     time.sleep(0.05)
     n += 1
