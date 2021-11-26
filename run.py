@@ -3,7 +3,7 @@ import machine
 from gps_uart import GPS
 from geo_calculate import GeoCal
 from oled import OLED
-from water_and_led import WaterSensor
+from water_sensor import WaterSensor
 
 
 # from wifi import WIFI
